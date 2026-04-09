@@ -1,7 +1,19 @@
 export const questionVariants = {
-  enter: { x: 100, opacity: 0 },
-  center: { x: 0, opacity: 1, transition: { duration: 0.35, ease: 'easeOut' } },
-  exit: { x: -100, opacity: 0, transition: { duration: 0.25, ease: 'easeIn' } },
+  enter: { x: 72, opacity: 0, scale: 0.94, filter: 'blur(6px)' },
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: { type: 'spring', stiffness: 420, damping: 32, mass: 0.55 },
+  },
+  exit: {
+    x: -64,
+    opacity: 0,
+    scale: 0.96,
+    filter: 'blur(4px)',
+    transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] },
+  },
 }
 
 export const fadeVariants = {
@@ -11,11 +23,12 @@ export const fadeVariants = {
 }
 
 export const sectionCompleteVariants = {
-  hidden: { scale: 0.85, opacity: 0 },
+  hidden: { scale: 0.82, opacity: 0, rotateX: 8 },
   visible: {
     scale: 1,
     opacity: 1,
-    transition: { duration: 0.5, type: 'spring', stiffness: 200, damping: 20 },
+    rotateX: 0,
+    transition: { duration: 0.55, type: 'spring', stiffness: 180, damping: 18 },
   },
 }
 

@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { primeAudio, playCountdown, playWhoosh } from '../utils/hudAudio.js'
 
 export default function MissionIntro({ mission, onContinue }) {
   const [countdown, setCountdown] = useState(3)
+
+  useEffect(() => {
+    if (countdown < 1 || countdown > 3) return
+    playCountdown(countdown)
+  }, [countdown])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -72,10 +78,24 @@ export default function MissionIntro({ mission, onContinue }) {
         transition={{ delay: 0.7, duration: 0.4 }}
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
       >
-        <button className="btn-primary" onClick={onContinue}>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            primeAudio()
+            playWhoosh()
+            onContinue()
+          }}
+        >
           <span>BEGIN MISSION {mission.number}</span>
         </button>
-        <div className="skip-hint" onClick={onContinue}>
+        <div
+          className="skip-hint"
+          onClick={() => {
+            primeAudio()
+            playWhoosh()
+            onContinue()
+          }}
+        >
           Auto-advancing in {countdown}s — click to skip
         </div>
       </motion.div>

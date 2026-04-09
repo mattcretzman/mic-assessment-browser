@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import BootSequence from './components/BootSequence.jsx'
 import RoleSelect from './components/RoleSelect.jsx'
@@ -11,7 +11,9 @@ import LeadCapture from './components/LeadCapture.jsx'
 import ShareCard from './components/ShareCard.jsx'
 import { MISSIONS } from './data/questions.js'
 import { calcHealingScore, calcSkillScore, calcAiScore, getMissionScore } from './utils/scoring.js'
-import { getArchetype } from './data/archetypes.js'
+import { getArchetype, getTier } from './data/archetypes.js'
+import MuteButton from './components/MuteButton.jsx'
+import { primeAudio, playWhoosh } from './utils/hudAudio.js'
 
 // Screen state machine:
 // boot → roleSelect → missionIntro → questions → sectionComplete → [next mission] → finalResults → archetypeReveal → leadCapture → shareCard
@@ -29,6 +31,7 @@ export default function App() {
   const skillScore = calcSkillScore(answers)
   const aiScore = calcAiScore(answers)
   const archetype = getArchetype(healingScore, skillScore, aiScore)
+  const tier = getTier(healingScore + skillScore + aiScore)
 
   const handleBoot = () => setScreen('roleSelect')
 
@@ -83,6 +86,8 @@ export default function App() {
   const handleShareCard = () => setScreen('shareCard')
 
   const handleRetake = () => {
+    primeAudio()
+    playWhoosh()
     setScreen('boot')
     setRole(null)
     setCurrentMission(0)
@@ -93,8 +98,20 @@ export default function App() {
 
   const mission = MISSIONS[currentMission]
 
+  // First tap/click anywhere resumes AudioContext so timer-driven SFX work later (browser autoplay policy).
+  useEffect(() => {
+    const onFirstPointer = () => {
+      primeAudio()
+      window.removeEventListener('pointerdown', onFirstPointer, true)
+    }
+    window.addEventListener('pointerdown', onFirstPointer, true)
+    return () => window.removeEventListener('pointerdown', onFirstPointer, true)
+  }, [])
+
   return (
-    <div className="app-wrapper">
+    <div className="app-wrapper halo-chrome">
+      <div className="scan-overlay" aria-hidden />
+      <MuteButton />
       <AnimatePresence mode="wait">
         {screen === 'boot' && (
           <motion.div key="boot" style={{ width: '100%', minHeight: '100vh' }}>
@@ -200,6 +217,11 @@ export default function App() {
             <LeadCapture
               archetype={archetype}
               totalScore={healingScore + skillScore + aiScore}
+              healingScore={healingScore}
+              skillScore={skillScore}
+              aiScore={aiScore}
+              role={role}
+              tierLabel={tier.tier}
               onContinue={handleShareCard}
             />
           </motion.div>

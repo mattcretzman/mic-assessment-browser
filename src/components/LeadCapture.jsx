@@ -1,24 +1,73 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { fadeVariants } from '../utils/animations.js'
+import { submitResultsToTeam } from '../utils/submitResultsToTeam.js'
 
-export default function LeadCapture({ archetype, totalScore, onContinue }) {
+export default function LeadCapture({
+  archetype,
+  totalScore,
+  healingScore,
+  skillScore,
+  aiScore,
+  role,
+  tierLabel,
+  onContinue,
+}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [notifyError, setNotifyError] = useState(null)
+  const [sending, setSending] = useState(false)
 
-  const handleSubmit = (e) => {
+  const basePayload = () => ({
+    archetypeName: archetype?.name || '',
+    tierLabel: tierLabel || '',
+    healingScore,
+    skillScore,
+    aiScore,
+    totalScore,
+    role: role || '',
+  })
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const payload = { name, email, archetype: archetype.name, totalScore }
-    console.log('[MIC Assessment] Lead captured:', payload)
-    // In production: POST to webhook
-    // fetch('/api/leads', { method: 'POST', body: JSON.stringify(payload) })
-    setSubmitted(true)
-    setTimeout(onContinue, 1200)
+    setSending(true)
+    setNotifyError(null)
+    let hadError = false
+    try {
+      await submitResultsToTeam({
+        anonymous: false,
+        name,
+        email,
+        ...basePayload(),
+      })
+    } catch (err) {
+      console.error('[MIC Assessment] Notify team failed:', err)
+      hadError = true
+      setNotifyError(
+        err?.status === 503
+          ? 'Results saved — team email not configured on server yet.'
+          : 'Could not notify the team automatically. Your results still appear on the next screen.'
+      )
+    } finally {
+      setSending(false)
+      setSubmitted(true)
+      setTimeout(onContinue, hadError ? 2200 : 1200)
+    }
   }
 
-  const handleSkip = () => {
-    console.log('[MIC Assessment] Lead capture skipped')
+  const handleSkip = async () => {
+    setNotifyError(null)
+    try {
+      await submitResultsToTeam({
+        anonymous: true,
+        name: '',
+        email: '',
+        ...basePayload(),
+      })
+    } catch (err) {
+      console.error('[MIC Assessment] Anonymous notify failed:', err)
+    }
     onContinue()
   }
 
@@ -57,7 +106,9 @@ export default function LeadCapture({ archetype, totalScore, onContinue }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Enter your details to receive a personalized breakdown of your results and the exact playbook to level up as <strong style={{ color: 'var(--electric)' }}>{archetype.name}</strong>.
+          Enter your details to receive a personalized breakdown of your results and the exact playbook to level up as{' '}
+          <strong style={{ color: 'var(--electric)' }}>{archetype.name}</strong>. Morgan&apos;s team gets a copy of your
+          scores so they can follow up.
         </motion.p>
 
         {submitted ? (
@@ -74,6 +125,22 @@ export default function LeadCapture({ archetype, totalScore, onContinue }) {
             }}
           >
             ◈ OPERATOR VERIFIED
+            {notifyError && (
+              <div
+                style={{
+                  marginTop: 16,
+                  fontSize: 12,
+                  fontFamily: 'Share Tech Mono, monospace',
+                  color: 'var(--amber)',
+                  maxWidth: 360,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  lineHeight: 1.5,
+                }}
+              >
+                {notifyError}
+              </div>
+            )}
           </motion.div>
         ) : (
           <motion.form
@@ -110,25 +177,27 @@ export default function LeadCapture({ archetype, totalScore, onContinue }) {
               type="submit"
               className="btn-orange"
               style={{ width: '100%', marginTop: 8, fontSize: 14 }}
+              disabled={sending}
             >
-              SEND MY RESULTS →
+              {sending ? 'TRANSMITTING…' : 'SEND MY RESULTS →'}
             </button>
 
             <button
               type="button"
               onClick={handleSkip}
+              disabled={sending}
               style={{
                 background: 'none',
                 border: 'none',
                 color: 'var(--muted)',
                 fontFamily: 'Share Tech Mono, monospace',
                 fontSize: 11,
-                cursor: 'pointer',
+                cursor: sending ? 'default' : 'pointer',
                 marginTop: 12,
                 display: 'block',
                 width: '100%',
                 textAlign: 'center',
-                opacity: 0.5,
+                opacity: sending ? 0.3 : 0.5,
                 textDecoration: 'underline',
               }}
             >

@@ -397,6 +397,8 @@ body {
   width: 100%;
   max-width: 600px;
   margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
 }
 
 .boot-line {
@@ -429,6 +431,8 @@ body {
   animation: pulse-border 1.5s infinite;
   text-transform: uppercase;
   transition: all 0.2s;
+  position: relative;
+  z-index: 2;
 }
 
 .boot-begin-btn:hover {
@@ -805,6 +809,7 @@ body {
   justify-content: center;
   padding: 40px 24px;
   text-align: center;
+  perspective: 1000px;
 }
 
 .section-complete-icon {
@@ -1373,7 +1378,7 @@ body {
     transparent 100%
   );
   pointer-events: none;
-  z-index: 500;
+  z-index: 3;
   animation: scanMove 3s linear infinite;
 }
 
@@ -1413,4 +1418,150 @@ body {
   right: 8px;
   border-bottom: 2px solid rgba(0, 180, 255, 0.4);
   border-right: 2px solid rgba(0, 180, 255, 0.4);
+}
+
+/* ===== HALO-STYLE ATMOSPHERE (original visuals — not affiliated with any game IP) ===== */
+.halo-chrome {
+  position: relative;
+}
+
+.halo-chrome::before {
+  content: '';
+  position: fixed;
+  inset: -25%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 180, 255, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 50% 100%, rgba(255, 106, 0, 0.06) 0%, transparent 50%);
+  animation: halo-breathe 7s ease-in-out infinite;
+}
+
+.halo-chrome::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 6, 14, 0.55) 100%);
+  opacity: 0.85;
+}
+
+.app-wrapper.halo-chrome > *:not(.scan-overlay):not(.mute-btn) {
+  position: relative;
+  z-index: 4;
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.boot-screen-halo {
+  position: relative;
+}
+
+.boot-energy-ring {
+  position: absolute;
+  width: min(90vw, 520px);
+  height: min(90vw, 520px);
+  border-radius: 50%;
+  border: 1px solid rgba(0, 180, 255, 0.2);
+  box-shadow:
+    0 0 40px rgba(0, 180, 255, 0.15),
+    inset 0 0 60px rgba(0, 180, 255, 0.05);
+  animation: boot-ring-pulse 3.5s ease-in-out infinite;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+@keyframes boot-ring-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.95;
+  }
+}
+
+.question-card-halo {
+  position: relative;
+  animation: card-halo-glow 4s ease-in-out infinite;
+}
+
+@keyframes card-halo-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(0, 180, 255, 0.25),
+      0 0 24px rgba(0, 180, 255, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 106, 0, 0.35),
+      0 0 36px rgba(255, 106, 0, 0.12);
+  }
+}
+
+.mute-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  background: rgba(6, 10, 18, 0.85);
+  border: 1px solid rgba(0, 180, 255, 0.35);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.mute-btn:hover {
+  color: var(--electric);
+  border-color: rgba(0, 180, 255, 0.7);
+  box-shadow: 0 0 16px rgba(0, 180, 255, 0.2);
+}
+
+.mute-btn-icon {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--orange);
+}
+
+.mute-btn-label {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halo-chrome::before,
+  .boot-energy-ring,
+  .question-card-halo,
+  .scan-overlay {
+    animation: none !important;
+  }
+
+  .halo-chrome::before {
+    opacity: 0.85;
+    transform: none;
+  }
 }

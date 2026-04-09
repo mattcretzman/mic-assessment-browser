@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { screenSlide } from '../utils/animations.js'
+import { primeAudio, playSelect } from '../utils/hudAudio.js'
 
 const ROLES = [
   {
@@ -48,7 +49,11 @@ export default function RoleSelect({ onSelect }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 + 0.2, duration: 0.4 }}
-            onClick={() => onSelect(role.title)}
+            onClick={() => {
+              primeAudio()
+              playSelect()
+              onSelect(role.title)
+            }}
           >
             <div className="role-card-title">{role.title}</div>
             <div className="role-card-desc">{role.desc}</div>

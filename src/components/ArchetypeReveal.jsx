@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { archetypeContainer, archetypeItem, archetypeNameVariants } from '../utils/animations.js'
+import { primeAudio, playScanPulse, playRevealSting, playWhoosh } from '../utils/hudAudio.js'
 
 const SCAN_LINES = [
   '> ANALYZING COMBAT PROFILE...',
@@ -18,8 +19,12 @@ export default function ArchetypeReveal({ archetype, onNext }) {
     SCAN_LINES.forEach((_, i) => {
       setTimeout(() => {
         setVisibleScanLines((prev) => [...prev, i])
+        playScanPulse()
         if (i === SCAN_LINES.length - 1) {
-          setTimeout(() => setPhase('reveal'), 800)
+          setTimeout(() => {
+            playRevealSting()
+            setPhase('reveal')
+          }, 800)
         }
       }, i * 350)
     })
@@ -114,7 +119,11 @@ export default function ArchetypeReveal({ archetype, onNext }) {
             >
               <button
                 className="btn-primary"
-                onClick={onNext}
+                onClick={() => {
+                  primeAudio()
+                  playWhoosh()
+                  onNext()
+                }}
               >
                 <span>SHARE YOUR RESULTS →</span>
               </button>

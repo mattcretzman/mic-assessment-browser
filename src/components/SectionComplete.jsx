@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { sectionCompleteVariants } from '../utils/animations.js'
 import { getMissionRead } from '../utils/scoring.js'
+import { primeAudio, playMissionComplete, playWhoosh } from '../utils/hudAudio.js'
 
 function useCountUp(target, duration = 1500) {
   const [count, setCount] = useState(0)
@@ -25,6 +26,10 @@ function useCountUp(target, duration = 1500) {
 export default function SectionComplete({ mission, score, onNext }) {
   const displayScore = useCountUp(score)
   const read = getMissionRead(mission.id, score, mission.maxScore)
+
+  useEffect(() => {
+    playMissionComplete()
+  }, [])
 
   return (
     <motion.div
@@ -79,7 +84,11 @@ export default function SectionComplete({ mission, score, onNext }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        onClick={onNext}
+        onClick={() => {
+          primeAudio()
+          playWhoosh()
+          onNext()
+        }}
       >
         {mission.id < 2 ? `NEXT MISSION →` : 'VIEW RESULTS →'}
       </motion.button>

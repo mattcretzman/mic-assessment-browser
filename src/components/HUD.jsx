@@ -1,10 +1,12 @@
+import { motion } from 'framer-motion'
 import { MISSIONS } from '../data/questions.js'
 
 const SEGMENT_COUNT = 20
 
 export default function HUD({ currentMission, currentQuestion, totalQuestions }) {
   const mission = MISSIONS[currentMission]
-  const globalQ = MISSIONS.slice(0, currentMission).reduce((sum, m) => sum + m.questions.length, 0) + currentQuestion
+  const globalQ =
+    MISSIONS.slice(0, currentMission).reduce((sum, m) => sum + m.questions.length, 0) + currentQuestion
   const totalQ = MISSIONS.reduce((sum, m) => sum + m.questions.length, 0)
   const overallProgress = globalQ / totalQ
 
@@ -26,12 +28,23 @@ export default function HUD({ currentMission, currentQuestion, totalQuestions })
       </div>
       <div className="hud-progress">
         <div className="hud-shield-bar">
-          {Array.from({ length: SEGMENT_COUNT }).map((_, i) => (
-            <div
-              key={i}
-              className={`hud-shield-seg ${i < filledCount ? segmentColor : ''}`}
-            />
-          ))}
+          {Array.from({ length: SEGMENT_COUNT }).map((_, i) => {
+            const on = i < filledCount
+            return (
+              <motion.div
+                key={i}
+                className={`hud-shield-seg ${on ? segmentColor : ''}`}
+                initial={false}
+                animate={
+                  on
+                    ? { opacity: [0.35, 1], scaleY: [0.35, 1] }
+                    : { opacity: 0.32, scaleY: 0.42 }
+                }
+                transition={{ duration: 0.22, delay: on ? i * 0.015 : 0, ease: 'easeOut' }}
+                style={{ transformOrigin: '50% 100%' }}
+              />
+            )
+          })}
         </div>
       </div>
     </div>

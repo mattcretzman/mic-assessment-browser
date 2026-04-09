@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getTier } from '../data/archetypes.js'
 import { MAX_HEALING, MAX_SKILL, MAX_AI, MAX_TOTAL } from '../data/questions.js'
 import { fadeVariants } from '../utils/animations.js'
+import { primeAudio, playReportOpen, playWhoosh } from '../utils/hudAudio.js'
 
 function useCountUp(target, duration = 1800, delay = 0) {
   const [count, setCount] = useState(0)
@@ -59,6 +60,11 @@ export default function FinalResults({ healingScore, skillScore, aiScore, onReve
   const total = healingScore + skillScore + aiScore
   const displayTotal = useCountUp(total, 2000, 800)
   const tier = getTier(total)
+
+  useEffect(() => {
+    playReportOpen()
+  }, [])
+
   return (
     <motion.div
       className="results-screen hex-grid scanlines"
@@ -130,7 +136,11 @@ export default function FinalResults({ healingScore, skillScore, aiScore, onReve
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.7, duration: 0.4 }}
         style={{ marginBottom: 40 }}
-        onClick={onReveal}
+        onClick={() => {
+          primeAudio()
+          playWhoosh()
+          onReveal()
+        }}
       >
         REVEAL YOUR ARCHETYPE →
       </motion.button>

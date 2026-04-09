@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import RatingInput from './RatingInput.jsx'
 import HUD from './HUD.jsx'
 import { questionVariants } from '../utils/animations.js'
+import { primeAudio, playCommit, playWhoosh } from '../utils/hudAudio.js'
 
 export default function QuestionSlide({ mission, missionIndex, questionIndex, answers, onAnswer }) {
   const question = mission.questions[questionIndex]
   const [selected, setSelected] = useState(answers[question.id] || null)
-  const [direction, setDirection] = useState(1)
 
   useEffect(() => {
     setSelected(answers[question.id] || null)
@@ -15,9 +15,12 @@ export default function QuestionSlide({ mission, missionIndex, questionIndex, an
 
   const handleSelect = (val) => {
     setSelected(val)
+    primeAudio()
+    playCommit(val, question.scale === 10 ? 10 : 5)
+    playWhoosh()
     setTimeout(() => {
       onAnswer(question.id, val)
-    }, 300)
+    }, 280)
   }
 
   const totalInMission = mission.questions.length
@@ -34,7 +37,7 @@ export default function QuestionSlide({ mission, missionIndex, questionIndex, an
         <AnimatePresence mode="wait">
           <motion.div
             key={question.id}
-            className="question-card"
+            className="question-card question-card-halo"
             variants={questionVariants}
             initial="enter"
             animate="center"

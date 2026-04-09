@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { primeAudio, playPowerUp } from '../utils/hudAudio.js'
 
 const BOOT_LINES = [
   { text: '> AMP SOCIAL SYSTEMS ONLINE', type: 'normal' },
@@ -25,8 +26,15 @@ export default function BootSequence({ onComplete }) {
     })
   }, [])
 
+  const handleBegin = () => {
+    primeAudio()
+    playPowerUp()
+    setTimeout(onComplete, 320)
+  }
+
   return (
-    <div className="boot-screen scanlines hex-grid">
+    <div className="boot-screen scanlines hex-grid boot-screen-halo">
+      <div className="boot-energy-ring" aria-hidden />
       <div className="boot-lines">
         {BOOT_LINES.map((line, i) => (
           <div
@@ -49,7 +57,7 @@ export default function BootSequence({ onComplete }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            onClick={onComplete}
+            onClick={handleBegin}
           >
             [ PRESS TO BEGIN ]
           </motion.button>

@@ -1,5 +1,5 @@
 /**
- * Procedural sci-fi HUD sounds (Web Audio API) — inspired by classic FPS HUDs.
+ * Procedural FPS-style UI sounds (Web Audio API) — reload, MG burst, shield ping, rocket whoosh.
  * No copyrighted game audio; all synthesized in-browser.
  */
 

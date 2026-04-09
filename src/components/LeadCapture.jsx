@@ -14,6 +14,7 @@ export default function LeadCapture({
   onContinue,
 }) {
   const [name, setName] = useState('')
+  const [company, setCompany] = useState('')
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [notifyError, setNotifyError] = useState(null)
@@ -38,6 +39,7 @@ export default function LeadCapture({
       await submitResultsToTeam({
         anonymous: false,
         name,
+        company,
         email,
         ...basePayload(),
       })
@@ -62,6 +64,7 @@ export default function LeadCapture({
       await submitResultsToTeam({
         anonymous: true,
         name: '',
+        company: '',
         email: '',
         ...basePayload(),
       })
@@ -121,7 +124,7 @@ export default function LeadCapture({
               fontSize: 18,
               color: 'var(--green)',
               padding: '40px 0',
-              textShadow: '0 0 20px rgba(0,255,140,0.5)',
+              textShadow: '0 0 20px rgba(196,176,232,0.45)',
             }}
           >
             ◈ OPERATOR VERIFIED
@@ -158,6 +161,20 @@ export default function LeadCapture({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">COMPANY</label>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Company name"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                required
+                autoComplete="organization"
               />
             </div>
 
@@ -170,6 +187,7 @@ export default function LeadCapture({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
               />
             </div>
 

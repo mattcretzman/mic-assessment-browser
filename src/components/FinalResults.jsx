@@ -82,21 +82,21 @@ export default function FinalResults({ healingScore, skillScore, aiScore, onReve
           label="HEALING CIRCLE"
           score={healingScore}
           max={MAX_HEALING}
-          color="#ff6a00"
+          color="#d4a230"
           delay={0}
         />
         <StatBlock
           label="SKILL DIAGNOSTIC"
           score={skillScore}
           max={MAX_SKILL}
-          color="#00b4ff"
+          color="#542ea5"
           delay={200}
         />
         <StatBlock
           label="AI READINESS"
           score={aiScore}
           max={MAX_AI}
-          color="#00ff8c"
+          color="#b8a4dc"
           delay={400}
         />
       </div>

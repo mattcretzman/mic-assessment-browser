@@ -59,6 +59,7 @@ export default async function handler(req, res) {
     anonymous,
     name,
     email,
+    company,
     role,
     archetypeName,
     tierLabel,
@@ -79,8 +80,8 @@ export default async function handler(req, res) {
     return
   }
 
-  if (!anonymous && (!name || !email)) {
-    res.status(400).json({ error: 'Name and email required' })
+  if (!anonymous && (!name || !email || !company)) {
+    res.status(400).json({ error: 'Name, company, and email required' })
     return
   }
 
@@ -101,6 +102,9 @@ export default async function handler(req, res) {
         }</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;"><strong>Email</strong></td><td style="padding:8px;border:1px solid #ddd;">${
           anonymous ? '—' : escapeHtml(email)
+        }</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;"><strong>Company</strong></td><td style="padding:8px;border:1px solid #ddd;">${
+          anonymous ? '—' : escapeHtml(company)
         }</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;"><strong>Role</strong></td><td style="padding:8px;border:1px solid #ddd;">${escapeHtml(
           role || '—'

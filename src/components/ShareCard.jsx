@@ -79,7 +79,7 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
             <div className="share-bar-track">
               <div
                 className="share-bar-fill"
-                style={{ width: `${healingPct}%`, background: '#ff6a00', boxShadow: '0 0 6px #ff6a0066' }}
+                style={{ width: `${healingPct}%`, background: '#d4a230', boxShadow: '0 0 6px #d4a23066' }}
               />
             </div>
             <div className="share-bar-val">{healingScore}/{MAX_HEALING}</div>
@@ -89,7 +89,7 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
             <div className="share-bar-track">
               <div
                 className="share-bar-fill"
-                style={{ width: `${skillPct}%`, background: '#00b4ff', boxShadow: '0 0 6px #00b4ff66' }}
+                style={{ width: `${skillPct}%`, background: '#542ea5', boxShadow: '0 0 6px #542ea566' }}
               />
             </div>
             <div className="share-bar-val">{skillScore}/{MAX_SKILL}</div>
@@ -99,7 +99,7 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
             <div className="share-bar-track">
               <div
                 className="share-bar-fill"
-                style={{ width: `${aiPct}%`, background: '#00ff8c', boxShadow: '0 0 6px #00ff8c66' }}
+                style={{ width: `${aiPct}%`, background: '#b8a4dc', boxShadow: '0 0 6px #b8a4dc66' }}
               />
             </div>
             <div className="share-bar-val">{aiScore}/{MAX_AI}</div>

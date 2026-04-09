@@ -5,7 +5,7 @@ export const ARCHETYPES = {
     subtitle: 'Invisible to buyers. Invisible to yourself.',
     description:
       'The foundation needs building. You know exactly what needs to change — and that self-awareness is your biggest asset right now.',
-    color: '#6a8aaa',
+    color: '#9b92a8',
     weakness: 'All three pillars need attention',
     strength: "You're here. That's already different.",
   },
@@ -15,7 +15,7 @@ export const ARCHETYPES = {
     subtitle: 'High output. Hidden ceiling.',
     description:
       "You're grinding hard and leaving energy on the table. The ceiling isn't your calendar. It's your Healing Circle. Fix the foundation and watch the numbers change.",
-    color: '#ff6a00',
+    color: '#d4a230',
     weakness: 'Inner game and AI integration',
     strength: 'Execution and skill execution',
   },
@@ -25,7 +25,7 @@ export const ARCHETYPES = {
     subtitle: 'Strong mindset. Inconsistent execution.',
     description:
       "You've got the mindset locked in and you understand the tools. The gap is converting that into consistent pipeline. Execution is the cheat code you haven't fully activated yet.",
-    color: '#00b4ff',
+    color: '#542ea5',
     weakness: 'Skill execution consistency',
     strength: 'Mindset and AI awareness',
   },
@@ -35,7 +35,7 @@ export const ARCHETYPES = {
     subtitle: 'Strong foundation. AI is your multiplier.',
     description:
       "Your foundation is solid and your skills are producing. AI is going to 10x what's already working — but only if you stop using it as a copy machine.",
-    color: '#00e5ff',
+    color: '#7b52c9',
     weakness: 'AI integration depth',
     strength: 'Human foundation and outbound skills',
   },
@@ -45,7 +45,7 @@ export const ARCHETYPES = {
     subtitle: "Efficient. But efficiency isn't magnetic.",
     description:
       "You're running a tight operation — strong skills, strong AI usage. But buyers can feel when the human left the building. The Healing Circle is where your edge is hiding.",
-    color: '#9b59b6',
+    color: '#6b4a9e',
     weakness: 'Whole-person foundation',
     strength: 'Technical skills and AI execution',
   },
@@ -55,7 +55,7 @@ export const ARCHETYPES = {
     subtitle: 'This is what it looks like when it all comes together.',
     description:
       'You show up whole. You execute with precision. You use AI as a thinking partner. This is the target state. Now help someone else get here.',
-    color: '#00ff8c',
+    color: '#e8c558',
     weakness: 'Keep raising the floor',
     strength: "Everything — and you know it",
   },
@@ -63,10 +63,10 @@ export const ARCHETYPES = {
 
 // Totals are out of 200 (100 + 50 + 50). Thresholds mirror the original PDF bands (~30% / 54% / 72% / 100%).
 export const SCORE_TIERS = [
-  { max: 60, tier: 'EARLY STAGE', color: '#ff3c3c', description: 'The foundation is being laid. Every expert was here once. The fact that you\'re measuring means you\'re already ahead of most.' },
-  { max: 108, tier: 'DEVELOPING', color: '#ffb800', description: 'You have real skills. Now it\'s about consistency, compounding, and closing the gaps you just identified.' },
-  { max: 144, tier: 'COMPETENT', color: '#00b4ff', description: 'You are producing. The question now is: are you performing at your ceiling, or just comfortable? This is where growth stalls for most.' },
-  { max: 200, tier: 'MAGNETIC', color: '#00ff8c', description: 'You are operating at an elite level. Pipeline is a byproduct of who you are. Now go build a team around this.' },
+  { max: 60, tier: 'EARLY STAGE', color: '#a67c35', description: 'The foundation is being laid. Every expert was here once. The fact that you\'re measuring means you\'re already ahead of most.' },
+  { max: 108, tier: 'DEVELOPING', color: '#d4a230', description: 'You have real skills. Now it\'s about consistency, compounding, and closing the gaps you just identified.' },
+  { max: 144, tier: 'COMPETENT', color: '#542ea5', description: 'You are producing. The question now is: are you performing at your ceiling, or just comfortable? This is where growth stalls for most.' },
+  { max: 200, tier: 'MAGNETIC', color: '#f0d78c', description: 'You are operating at an elite level. Pipeline is a byproduct of who you are. Now go build a team around this.' },
 ]
 
 export function getTier(score) {

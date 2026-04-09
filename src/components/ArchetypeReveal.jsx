@@ -101,13 +101,13 @@ export default function ArchetypeReveal({ archetype, onNext }) {
             <motion.div className="archetype-stats" variants={archetypeItem}>
               <div className="archetype-stat-row">
                 <div className="archetype-stat-label">STRENGTH:</div>
-                <div className="archetype-stat-value" style={{ color: '#00ff8c' }}>
+                <div className="archetype-stat-value" style={{ color: '#d4a230' }}>
                   {archetype.strength}
                 </div>
               </div>
               <div className="archetype-stat-row">
                 <div className="archetype-stat-label">BLIND SPOT:</div>
-                <div className="archetype-stat-value" style={{ color: '#ff6a00' }}>
+                <div className="archetype-stat-value" style={{ color: '#542ea5' }}>
                   {archetype.weakness}
                 </div>
               </div>

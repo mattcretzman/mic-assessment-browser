@@ -89,7 +89,7 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
             <div className="share-bar-track">
               <div
                 className="share-bar-fill"
-                style={{ width: `${skillPct}%`, background: '#542ea5', boxShadow: '0 0 6px #542ea566' }}
+                style={{ width: `${skillPct}%`, background: '#7c5fd4', boxShadow: '0 0 6px #7c5fd466' }}
               />
             </div>
             <div className="share-bar-val">{skillScore}/{MAX_SKILL}</div>

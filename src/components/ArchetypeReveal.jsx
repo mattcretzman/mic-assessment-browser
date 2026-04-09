@@ -107,7 +107,7 @@ export default function ArchetypeReveal({ archetype, onNext }) {
               </div>
               <div className="archetype-stat-row">
                 <div className="archetype-stat-label">BLIND SPOT:</div>
-                <div className="archetype-stat-value" style={{ color: '#542ea5' }}>
+                <div className="archetype-stat-value" style={{ color: '#7c5fd4' }}>
                   {archetype.weakness}
                 </div>
               </div>

@@ -25,7 +25,7 @@ export const ARCHETYPES = {
     subtitle: 'Strong mindset. Inconsistent execution.',
     description:
       "You've got the mindset locked in and you understand the tools. The gap is converting that into consistent pipeline. Execution is the cheat code you haven't fully activated yet.",
-    color: '#542ea5',
+    color: '#7c5fd4',
     weakness: 'Skill execution consistency',
     strength: 'Mindset and AI awareness',
   },
@@ -65,7 +65,7 @@ export const ARCHETYPES = {
 export const SCORE_TIERS = [
   { max: 60, tier: 'EARLY STAGE', color: '#a67c35', description: 'The foundation is being laid. Every expert was here once. The fact that you\'re measuring means you\'re already ahead of most.' },
   { max: 108, tier: 'DEVELOPING', color: '#d4a230', description: 'You have real skills. Now it\'s about consistency, compounding, and closing the gaps you just identified.' },
-  { max: 144, tier: 'COMPETENT', color: '#542ea5', description: 'You are producing. The question now is: are you performing at your ceiling, or just comfortable? This is where growth stalls for most.' },
+  { max: 144, tier: 'COMPETENT', color: '#7c5fd4', description: 'You are producing. The question now is: are you performing at your ceiling, or just comfortable? This is where growth stalls for most.' },
   { max: 200, tier: 'MAGNETIC', color: '#f0d78c', description: 'You are operating at an elite level. Pipeline is a byproduct of who you are. Now go build a team around this.' },
 ]
 

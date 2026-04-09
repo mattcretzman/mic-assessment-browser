@@ -7,6 +7,9 @@ let ctx = null
 let master = null
 let noiseBuffer = null
 
+/** Cycles menu / button clicks: reload → MG → shield → rocket */
+let uiClickVariant = 0
+
 function getMuted() {
   try {
     return localStorage.getItem('mic-audio-muted') === '1'
@@ -61,6 +64,148 @@ function connectToMaster(node) {
   node.connect(master)
 }
 
+function getNoiseBuffer() {
+  const c = getCtx()
+  if (!c) return null
+  if (noiseBuffer) return noiseBuffer
+  const len = c.sampleRate * 0.4
+  const buffer = c.createBuffer(1, len, c.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1
+  noiseBuffer = buffer
+  return noiseBuffer
+}
+
+/** Short bandpassed noise burst — metal, shells, air */
+function noiseBurst(t0, { dur = 0.04, freq = 2000, q = 2.5, peak = 0.09 }) {
+  const c = getCtx()
+  if (!c || getMuted()) return
+  const src = c.createBufferSource()
+  const buf = getNoiseBuffer()
+  if (!buf) return
+  src.buffer = buf
+  const filter = c.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.frequency.setValueAtTime(freq, t0)
+  filter.Q.value = q
+  const g = c.createGain()
+  g.gain.setValueAtTime(0.0001, t0)
+  g.gain.exponentialRampToValueAtTime(peak, t0 + 0.004)
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur)
+  src.connect(filter)
+  filter.connect(g)
+  connectToMaster(g)
+  src.start(t0, 0, dur + 0.02)
+  src.stop(t0 + dur + 0.03)
+}
+
+/** Magazine seat + rack (FPS reload click) */
+function playMagReloadClick() {
+  const c = getCtx()
+  if (!c || getMuted()) return
+  const t = now()
+  noiseBurst(t, { dur: 0.028, freq: 2400, q: 3, peak: 0.085 })
+  noiseBurst(t + 0.052, { dur: 0.022, freq: 1800, q: 2.2, peak: 0.07 })
+  const o = c.createOscillator()
+  const g = c.createGain()
+  o.type = 'sine'
+  o.frequency.setValueAtTime(110, t + 0.05)
+  g.gain.setValueAtTime(0.0001, t + 0.05)
+  g.gain.exponentialRampToValueAtTime(0.11, t + 0.056)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09)
+  o.connect(g)
+  connectToMaster(g)
+  o.start(t + 0.05)
+  o.stop(t + 0.1)
+}
+
+/** Short automatic burst */
+function playMachineGunTap() {
+  const c = getCtx()
+  if (!c || getMuted()) return
+  const t = now()
+  const pulses = 6
+  for (let i = 0; i < pulses; i++) {
+    const o = c.createOscillator()
+    const g = c.createGain()
+    const bp = c.createBiquadFilter()
+    o.type = 'square'
+    o.frequency.setValueAtTime(165 + i * 8, t + i * 0.011)
+    bp.type = 'bandpass'
+    bp.frequency.value = 1100
+    bp.Q.value = 1.2
+    g.gain.setValueAtTime(0.0001, t + i * 0.011)
+    g.gain.exponentialRampToValueAtTime(0.055, t + i * 0.011 + 0.002)
+    g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.011 + 0.014)
+    o.connect(bp)
+    bp.connect(g)
+    connectToMaster(g)
+    o.start(t + i * 0.011)
+    o.stop(t + i * 0.011 + 0.02)
+  }
+}
+
+/** Shield charge / power-up ping */
+function playShieldActivateTap() {
+  const c = getCtx()
+  if (!c || getMuted()) return
+  const t = now()
+  const o = c.createOscillator()
+  const g = c.createGain()
+  const f = c.createBiquadFilter()
+  o.type = 'triangle'
+  o.frequency.setValueAtTime(380, t)
+  o.frequency.exponentialRampToValueAtTime(1400, t + 0.07)
+  f.type = 'lowpass'
+  f.frequency.value = 3200
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.1, t + 0.015)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11)
+  o.connect(f)
+  f.connect(g)
+  connectToMaster(g)
+  o.start(t)
+  o.stop(t + 0.13)
+  noiseBurst(t + 0.04, { dur: 0.035, freq: 5200, q: 4, peak: 0.04 })
+}
+
+/** Rocket tube / arming whoosh */
+function playRocketTap() {
+  const c = getCtx()
+  if (!c || getMuted()) return
+  const t = now()
+  const src = c.createBufferSource()
+  const buf = getNoiseBuffer()
+  if (!buf) return
+  src.buffer = buf
+  const filter = c.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.frequency.setValueAtTime(4200, t)
+  filter.frequency.exponentialRampToValueAtTime(450, t + 0.14)
+  filter.Q.value = 0.85
+  const g = c.createGain()
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.09, t + 0.025)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16)
+  src.connect(filter)
+  filter.connect(g)
+  connectToMaster(g)
+  src.start(t, 0, 0.18)
+  src.stop(t + 0.2)
+  const o = c.createOscillator()
+  const g2 = c.createGain()
+  o.type = 'sine'
+  o.frequency.setValueAtTime(95, t)
+  o.frequency.exponentialRampToValueAtTime(45, t + 0.12)
+  g2.gain.setValueAtTime(0.0001, t)
+  g2.gain.exponentialRampToValueAtTime(0.08, t + 0.02)
+  g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.15)
+  o.connect(g2)
+  connectToMaster(g2)
+  o.start(t)
+  o.stop(t + 0.16)
+}
+
 /** Short UI tick */
 export function playBlip(freq = 880, dur = 0.04) {
   const c = getCtx()
@@ -95,63 +240,43 @@ export function playBootLine(type = 'normal') {
 
 /** Rising "shields charging" feel */
 export function playShieldTick(step = 0) {
-  const base = 520 + step * 35
-  playBlip(base, 0.03)
-}
-
-/** Menu / option select */
-export function playSelect() {
   const c = getCtx()
   if (!c || getMuted()) return
+  const base = 520 + step * 35
   const t = now()
   const o = c.createOscillator()
   const g = c.createGain()
-  o.type = 'triangle'
-  o.frequency.setValueAtTime(180, t)
-  o.frequency.exponentialRampToValueAtTime(520, t + 0.06)
+  o.type = 'sine'
+  o.frequency.setValueAtTime(base * 0.85, t)
+  o.frequency.exponentialRampToValueAtTime(base * 1.15, t + 0.04)
   g.gain.setValueAtTime(0.0001, t)
-  g.gain.exponentialRampToValueAtTime(0.1, t + 0.02)
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.1)
+  g.gain.exponentialRampToValueAtTime(0.08, t + 0.012)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06)
   o.connect(g)
   connectToMaster(g)
   o.start(t)
-  o.stop(t + 0.12)
+  o.stop(t + 0.07)
 }
 
-/** Rating number chosen — pitch scales with commitment */
+/** Menu / option select — rotates reload / MG / shield / rocket */
+export function playSelect() {
+  if (getMuted()) return
+  const kinds = [playMagReloadClick, playMachineGunTap, playShieldActivateTap, playRocketTap]
+  kinds[uiClickVariant % kinds.length]()
+  uiClickVariant++
+}
+
+/**
+ * Rating chosen — quartile maps to weapon metaphor (low → reload … high → rocket).
+ */
 export function playCommit(value, max = 5) {
-  const c = getCtx()
-  if (!c || getMuted()) return
-  const t = now()
-  const f0 = 320 + (value / max) * 480
-  const o = c.createOscillator()
-  const g = c.createGain()
-  o.type = 'square'
-  o.frequency.setValueAtTime(f0 * 0.6, t)
-  o.frequency.exponentialRampToValueAtTime(f0, t + 0.05)
-  g.gain.setValueAtTime(0.0001, t)
-  g.gain.exponentialRampToValueAtTime(0.06, t + 0.015)
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12)
-  const filter = c.createBiquadFilter()
-  filter.type = 'lowpass'
-  filter.frequency.value = 2400
-  o.connect(filter)
-  filter.connect(g)
-  connectToMaster(g)
-  o.start(t)
-  o.stop(t + 0.15)
-}
-
-function getNoiseBuffer() {
-  const c = getCtx()
-  if (!c) return null
-  if (noiseBuffer) return noiseBuffer
-  const len = c.sampleRate * 0.4
-  const buffer = c.createBuffer(1, len, c.sampleRate)
-  const data = buffer.getChannelData(0)
-  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1
-  noiseBuffer = buffer
-  return noiseBuffer
+  if (getMuted()) return
+  const ratio = max <= 1 ? 1 : (value - 1) / (max - 1)
+  const q = Math.min(3, Math.floor(ratio * 4))
+  if (q === 0) playMagReloadClick()
+  else if (q === 1) playMachineGunTap()
+  else if (q === 2) playShieldActivateTap()
+  else playRocketTap()
 }
 
 /** Slide / screen transition */
@@ -223,11 +348,30 @@ export function playMissionComplete() {
   })
 }
 
-/** System online / begin */
+/** System online / begin — shield full charge + power stinger */
 export function playPowerUp() {
   const c = getCtx()
   if (!c || getMuted()) return
   const t = now()
+  const src = c.createBufferSource()
+  const buf = getNoiseBuffer()
+  if (buf) {
+    src.buffer = buf
+    const nf = c.createBiquadFilter()
+    nf.type = 'bandpass'
+    nf.frequency.setValueAtTime(400, t)
+    nf.frequency.exponentialRampToValueAtTime(2800, t + 0.22)
+    nf.Q.value = 0.6
+    const ng = c.createGain()
+    ng.gain.setValueAtTime(0.0001, t)
+    ng.gain.exponentialRampToValueAtTime(0.055, t + 0.04)
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.28)
+    src.connect(nf)
+    nf.connect(ng)
+    connectToMaster(ng)
+    src.start(t, 0, 0.3)
+    src.stop(t + 0.32)
+  }
   ;[
     { f: 130.81, d: 0.15 },
     { f: 164.81, d: 0.15 },
@@ -274,7 +418,10 @@ export function playRevealSting() {
 /** Results screen impact */
 export function playReportOpen() {
   playWhoosh()
-  setTimeout(() => playBlip(440, 0.08), 40)
+  setTimeout(() => {
+    if (getMuted()) return
+    noiseBurst(now(), { dur: 0.045, freq: 1900, q: 2.8, peak: 0.07 })
+  }, 40)
 }
 
 export function setMuted(muted) {

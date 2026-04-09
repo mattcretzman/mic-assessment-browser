@@ -89,7 +89,7 @@ export default function FinalResults({ healingScore, skillScore, aiScore, onReve
           label="SKILL DIAGNOSTIC"
           score={skillScore}
           max={MAX_SKILL}
-          color="#542ea5"
+          color="#7c5fd4"
           delay={200}
         />
         <StatBlock

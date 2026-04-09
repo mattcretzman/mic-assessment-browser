@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import BootSequence from './components/BootSequence.jsx'
 import RoleSelect from './components/RoleSelect.jsx'
 import MissionIntro from './components/MissionIntro.jsx'
+import PersonalDisclaimer from './components/PersonalDisclaimer.jsx'
 import QuestionSlide from './components/QuestionSlide.jsx'
 import SectionComplete from './components/SectionComplete.jsx'
 import FinalResults from './components/FinalResults.jsx'
@@ -16,7 +17,7 @@ import MuteButton from './components/MuteButton.jsx'
 import { primeAudio, playWhoosh } from './utils/hudAudio.js'
 
 // Screen state machine:
-// boot → roleSelect → missionIntro → questions → sectionComplete → [next mission] → finalResults → archetypeReveal → leadCapture → shareCard
+// boot → roleSelect → personalDisclaimer → missionIntro → questions → sectionComplete → [next mission] → finalResults → archetypeReveal → leadCapture → shareCard
 
 export default function App() {
   const [screen, setScreen] = useState('boot')
@@ -38,6 +39,10 @@ export default function App() {
   const handleRoleSelect = (selectedRole) => {
     setRole(selectedRole)
     setCurrentMission(0)
+    setScreen('personalDisclaimer')
+  }
+
+  const handlePersonalDisclaimerContinue = () => {
     setScreen('missionIntro')
   }
 
@@ -122,6 +127,19 @@ export default function App() {
         {screen === 'roleSelect' && (
           <motion.div key="roleSelect" style={{ width: '100%', minHeight: '100vh' }}>
             <RoleSelect onSelect={handleRoleSelect} />
+          </motion.div>
+        )}
+
+        {screen === 'personalDisclaimer' && (
+          <motion.div
+            key="personalDisclaimer"
+            style={{ width: '100%', minHeight: '100vh' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <PersonalDisclaimer onContinue={handlePersonalDisclaimerContinue} />
           </motion.div>
         )}
 

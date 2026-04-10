@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { primeAudio, playPowerUp } from '../utils/hudAudio.js'
+import { primeAudio, playPowerUp, playSelect } from '../utils/hudAudio.js'
 
 const BOOT_LINES = [
   { text: '> AMP SOCIAL SYSTEMS ONLINE', type: 'normal' },
@@ -28,6 +28,7 @@ export default function BootSequence({ onComplete }) {
 
   const handleBegin = () => {
     primeAudio()
+    playSelect()
     playPowerUp()
     setTimeout(onComplete, 320)
   }

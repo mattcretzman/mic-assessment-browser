@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { fadeVariants } from '../utils/animations.js'
 import { submitResultsToTeam } from '../utils/submitResultsToTeam.js'
+import { primeAudio, playSelect } from '../utils/hudAudio.js'
 
 export default function LeadCapture({
   archetype,
@@ -32,6 +33,8 @@ export default function LeadCapture({
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    primeAudio()
+    playSelect()
     setSending(true)
     setNotifyError(null)
     let hadError = false
@@ -59,6 +62,8 @@ export default function LeadCapture({
   }
 
   const handleSkip = async () => {
+    primeAudio()
+    playSelect()
     setNotifyError(null)
     try {
       await submitResultsToTeam({
@@ -109,9 +114,9 @@ export default function LeadCapture({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Enter your details to receive a personalized breakdown of your results and the exact playbook to level up as{' '}
-          <strong style={{ color: 'var(--electric)' }}>{archetype.name}</strong>. Morgan&apos;s team gets a copy of your
-          scores so they can follow up.
+          Enter your details so we can send a personalized breakdown and the exact playbook to level up as{' '}
+          <strong style={{ color: 'var(--electric)' }}>{archetype.name}</strong>. On the next screen you&apos;ll see your
+          full after-action scores. Morgan&apos;s team gets a copy so they can follow up.
         </motion.p>
 
         {submitted ? (
@@ -219,7 +224,7 @@ export default function LeadCapture({
                 textDecoration: 'underline',
               }}
             >
-              skip — just show me the share card
+              skip — show my report
             </button>
           </motion.form>
         )}

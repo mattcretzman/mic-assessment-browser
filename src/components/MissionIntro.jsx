@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { primeAudio, playCountdown, playWhoosh } from '../utils/hudAudio.js'
+import { playButtonNav, playCountdown } from '../utils/hudAudio.js'
 
 export default function MissionIntro({ mission, onContinue }) {
   const [countdown, setCountdown] = useState(3)
@@ -81,8 +81,7 @@ export default function MissionIntro({ mission, onContinue }) {
         <button
           className="btn-primary"
           onClick={() => {
-            primeAudio()
-            playWhoosh()
+            playButtonNav()
             onContinue()
           }}
         >
@@ -91,8 +90,7 @@ export default function MissionIntro({ mission, onContinue }) {
         <div
           className="skip-hint"
           onClick={() => {
-            primeAudio()
-            playWhoosh()
+            playButtonNav()
             onContinue()
           }}
         >

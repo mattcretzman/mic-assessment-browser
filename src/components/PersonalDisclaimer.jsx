@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
 import { fadeVariants } from '../utils/animations.js'
-import { primeAudio, playWhoosh } from '../utils/hudAudio.js'
+import { playButtonNav } from '../utils/hudAudio.js'
 
 export default function PersonalDisclaimer({ onContinue }) {
   const handleContinue = () => {
-    primeAudio()
-    playWhoosh()
+    playButtonNav()
     onContinue()
   }
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getTier } from '../data/archetypes.js'
 import { MAX_HEALING, MAX_SKILL, MAX_AI, MAX_TOTAL } from '../data/questions.js'
 import { fadeVariants } from '../utils/animations.js'
+import { primeAudio, playSelect } from '../utils/hudAudio.js'
 
 export default function ShareCard({ archetype, healingScore, skillScore, aiScore, onRetake }) {
   const total = healingScore + skillScore + aiScore
@@ -13,6 +14,8 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
   const postText = `Just took the MIC Method Assessment by @MorganJIngram.\n\nMy score: ${total}/${MAX_TOTAL}.\nI'm ${archetype.name}.\nMy biggest gap is: ${archetype.weakness}.\n\nTake the assessment: https://mic-assessment.com`
 
   const handleCopy = () => {
+    primeAudio()
+    playSelect()
     navigator.clipboard.writeText(postText).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -20,6 +23,8 @@ export default function ShareCard({ archetype, healingScore, skillScore, aiScore
   }
 
   const handleCopyLink = () => {
+    primeAudio()
+    playSelect()
     navigator.clipboard.writeText('https://mic-assessment.com').then(() => {
       setLinkCopied(true)
       setTimeout(() => setLinkCopied(false), 2000)

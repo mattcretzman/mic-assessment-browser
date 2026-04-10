@@ -29,7 +29,7 @@ function getCtx() {
     if (!AC) return null
     ctx = new AC()
     master = ctx.createGain()
-    master.gain.value = 0.28
+    master.gain.value = 0.4
     master.connect(ctx.destination)
   }
   return ctx
@@ -264,6 +264,22 @@ export function playSelect() {
   const kinds = [playMagReloadClick, playMachineGunTap, playShieldActivateTap, playRocketTap]
   kinds[uiClickVariant % kinds.length]()
   uiClickVariant++
+}
+
+/** ms between weapon click and transition whoosh so the click is audible */
+const NAV_WHOOSH_DELAY_MS = 120
+
+/**
+ * Primary navigation / CTA buttons: unlock audio, weapon UI click, then whoosh after a short gap.
+ * (Whoosh alone masked the click when fired on the same frame.)
+ */
+export function playButtonNav() {
+  primeAudio()
+  playSelect()
+  setTimeout(() => {
+    if (getMuted()) return
+    playWhoosh()
+  }, NAV_WHOOSH_DELAY_MS)
 }
 
 /**

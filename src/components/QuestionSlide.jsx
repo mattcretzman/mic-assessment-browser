@@ -17,7 +17,7 @@ export default function QuestionSlide({ mission, missionIndex, questionIndex, an
     setSelected(val)
     primeAudio()
     playCommit(val, question.scale === 10 ? 10 : 5)
-    playWhoosh()
+    setTimeout(() => playWhoosh(), 120)
     setTimeout(() => {
       onAnswer(question.id, val)
     }, 280)

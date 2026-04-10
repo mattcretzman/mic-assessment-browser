@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { sectionCompleteVariants } from '../utils/animations.js'
 import { getMissionRead } from '../utils/scoring.js'
-import { primeAudio, playMissionComplete, playWhoosh } from '../utils/hudAudio.js'
+import { playButtonNav, playMissionComplete } from '../utils/hudAudio.js'
 
 function useCountUp(target, duration = 1500) {
   const [count, setCount] = useState(0)
@@ -85,8 +85,7 @@ export default function SectionComplete({ mission, score, onNext }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
         onClick={() => {
-          primeAudio()
-          playWhoosh()
+          playButtonNav()
           onNext()
         }}
       >

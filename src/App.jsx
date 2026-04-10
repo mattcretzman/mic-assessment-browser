@@ -14,10 +14,10 @@ import { MISSIONS } from './data/questions.js'
 import { calcHealingScore, calcSkillScore, calcAiScore, getMissionScore } from './utils/scoring.js'
 import { getArchetype, getTier } from './data/archetypes.js'
 import MuteButton from './components/MuteButton.jsx'
-import { primeAudio, playWhoosh } from './utils/hudAudio.js'
+import { primeAudio, playButtonNav } from './utils/hudAudio.js'
 
 // Screen state machine:
-// boot → roleSelect → personalDisclaimer → missionIntro → questions → sectionComplete → [next mission] → finalResults → archetypeReveal → leadCapture → shareCard
+// boot → roleSelect → personalDisclaimer → missionIntro → questions → sectionComplete → [next mission] → leadCapture → finalResults → archetypeReveal → shareCard
 
 export default function App() {
   const [screen, setScreen] = useState('boot')
@@ -78,7 +78,7 @@ export default function App() {
   const handleSectionNext = () => {
     const nextMission = currentMission + 1
     if (nextMission >= MISSIONS.length) {
-      setScreen('finalResults')
+      setScreen('leadCapture')
     } else {
       setCurrentMission(nextMission)
       setCurrentQuestion(0)
@@ -87,12 +87,11 @@ export default function App() {
   }
 
   const handleRevealArchetype = () => setScreen('archetypeReveal')
-  const handleLeadCapture = () => setScreen('leadCapture')
+  const handleLeadCaptureContinue = () => setScreen('finalResults')
   const handleShareCard = () => setScreen('shareCard')
 
   const handleRetake = () => {
-    primeAudio()
-    playWhoosh()
+    playButtonNav()
     setScreen('boot')
     setRole(null)
     setCurrentMission(0)
@@ -188,6 +187,28 @@ export default function App() {
           </motion.div>
         )}
 
+        {screen === 'leadCapture' && (
+          <motion.div
+            key="leadCapture"
+            style={{ width: '100%', minHeight: '100vh' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <LeadCapture
+              archetype={archetype}
+              totalScore={healingScore + skillScore + aiScore}
+              healingScore={healingScore}
+              skillScore={skillScore}
+              aiScore={aiScore}
+              role={role}
+              tierLabel={tier.tier}
+              onContinue={handleLeadCaptureContinue}
+            />
+          </motion.div>
+        )}
+
         {screen === 'finalResults' && (
           <motion.div
             key="finalResults"
@@ -218,29 +239,7 @@ export default function App() {
           >
             <ArchetypeReveal
               archetype={archetype}
-              onNext={handleLeadCapture}
-            />
-          </motion.div>
-        )}
-
-        {screen === 'leadCapture' && (
-          <motion.div
-            key="leadCapture"
-            style={{ width: '100%', minHeight: '100vh' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <LeadCapture
-              archetype={archetype}
-              totalScore={healingScore + skillScore + aiScore}
-              healingScore={healingScore}
-              skillScore={skillScore}
-              aiScore={aiScore}
-              role={role}
-              tierLabel={tier.tier}
-              onContinue={handleShareCard}
+              onNext={handleShareCard}
             />
           </motion.div>
         )}

@@ -134,14 +134,21 @@ export default async function handler(req, res) {
     payload.reply_to = email
   }
 
-  const r = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  })
+  let r
+  try {
+    r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    console.error('[send-results] Resend fetch failed:', err)
+    res.status(502).json({ error: 'Email provider unreachable', detail: String(err.message || err).slice(0, 200) })
+    return
+  }
 
   if (!r.ok) {
     const errText = await r.text()

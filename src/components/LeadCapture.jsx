@@ -51,7 +51,7 @@ export default function LeadCapture({
       hadError = true
       setNotifyError(
         err?.status === 503
-          ? 'Results saved — team email not configured on server yet.'
+          ? 'Team email not configured on server yet — results were not sent.'
           : 'Could not notify the team automatically. Your results still appear on the next screen.'
       )
     } finally {
@@ -65,6 +65,7 @@ export default function LeadCapture({
     primeAudio()
     playSelect()
     setNotifyError(null)
+    let skipError = false
     try {
       await submitResultsToTeam({
         anonymous: true,
@@ -75,8 +76,19 @@ export default function LeadCapture({
       })
     } catch (err) {
       console.error('[MIC Assessment] Anonymous notify failed:', err)
+      skipError = true
+      setNotifyError(
+        err?.status === 503
+          ? 'Team email not configured on server yet — results were not sent.'
+          : 'Could not notify the team automatically. Your results still appear on the next screen.'
+      )
     }
-    onContinue()
+    if (skipError) {
+      setSubmitted(true)
+      setTimeout(onContinue, 2200)
+    } else {
+      onContinue()
+    }
   }
 
   return (
